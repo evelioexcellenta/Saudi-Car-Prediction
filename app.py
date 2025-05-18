@@ -16,15 +16,37 @@ with open('ordinal_encoder.pkl', 'rb') as f:
 with open('scaler.pkl', 'rb') as f:
     scaler = pickle.load(f)
 
-# Judul aplikasi
-st.title("Prediksi Harga Mobil Bekas di Arab Saudi 🚗")
+# Atur halaman
+st.set_page_config(page_title="Prediksi Harga Mobil Bekas", layout="wide")
 
-# Input dari user
-st.markdown("Masukkan fitur-fitur mobil berikut:")
+# Sidebar info
+with st.sidebar:
+    st.image("car.jpg", width=200)
+    st.markdown("""
+    ## ℹ️ Tentang Aplikasi
+    Aplikasi ini menggunakan model Machine Learning untuk memprediksi harga mobil bekas di Arab Saudi.
+    
+    **Gunakan formulir di kanan untuk mengisi fitur mobil.**
+    
+    **Model:** XGBoost  
+    **Data:** Mobil Bekas Arab Saudi
+    """)
 
-# Input fitur LOO
-type_ = st.selectbox("Tipe Mobil (Type)", [
-    'C300', 'Sunny', 'Elantra', 'Accord', 'Land Cruiser', 'Impala', 'Yaris', 'Camry',
+# Gambar header
+# st.image("car.jpg", use_column_width=True)
+
+# Judul
+st.markdown("<h1 style='text-align: center; color: #0A9396;'>🚘 Prediksi Harga Mobil Bekas di Arab Saudi</h1>", unsafe_allow_html=True)
+st.markdown("<hr>", unsafe_allow_html=True)
+
+# Form input
+with st.form("form_prediksi"):
+    st.markdown("### 📋 Masukkan Detail Mobil")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        type_ = st.selectbox("🚗 Tipe Mobil", ['C300', 'Sunny', 'Elantra', 'Accord', 'Land Cruiser', 'Impala', 'Yaris', 'Camry',
     'Patrol', 'Tahoe', 'Corolla', 'Copper', 'Prado', 'Civic', 'Furniture', 'RX',
     'Yukon', 'Bus Urvan', 'Aurion', 'Malibu', 'Rav4', 'CX9', 'Expedition', 'ES',
     'Cadenza', 'Tucson', 'Platinum', 'G80', 'Accent', 'Sonata', 'LX', 'GX', 'Azera',
@@ -63,68 +85,56 @@ type_ = st.selectbox("Tipe Mobil (Type)", [
     'SX4', 'Suvana', 'Liberty', 'Coupe', 'Prestige Plus', 'X40', 'Colorado', 'CT6',
     'Fabia', 'Megane', 'Q7', 'Daily', 'Carens', 'A4', 'GC7', 'G330', 'H9', 'Sedona',
     'Cayenne Turbo GTS', 'SRT', 'HS', "D'max", 'Pegas', 'DTS', 'Superb', 'Veracruz',
-    '307', 'CX7', 'QQ', 'L300', 'Galant'
-])
+    '307', 'CX7', 'QQ', 'L300', 'Galant'])
+        make = st.selectbox("🏷️ Merek Mobil", [...])
+        region = st.selectbox("📍 Wilayah", [...])
 
-make = st.selectbox("Merek (Make)", [
-    'Chrysler', 'Nissan', 'Hyundai', 'Honda', 'Toyota', 'Chevrolet', 'MINI', 'Lexus',
-    'GMC', 'Mazda', 'Ford', 'Kia', 'Genesis', 'Cadillac', 'Geely', 'MG', 'Jeep',
-    'Mercedes', 'INFINITI', 'Dodge', 'Great Wall', 'Jaguar', 'Land Rover', 'GAC',
-    'Renault', 'Suzuki', 'Peugeot', 'Changan', 'HAVAL', 'BMW', 'Mitsubishi',
-    'Subaru', 'Zhengzhou', 'Lincoln', 'Daihatsu', 'FAW', 'Chery', 'Porsche', 'Isuzu',
-    'Volkswagen', 'Audi', 'Fiat', 'Mercury', 'Classic', 'Hummer', 'BYD', 'Maserati',
-    'Lifan', 'Bentley', 'Foton', 'Aston Martin', 'Other', 'Victory Auto', 'Škoda',
-    'Iveco'
-])
+    with col2:
+        color = st.selectbox("🎨 Warna Mobil", [...])
+        gear_type = st.selectbox("⚙️ Transmisi", ['Automatic', 'Manual'])
+        origin = st.selectbox("🌍 Asal Mobil", ['Saudi', 'Gulf Arabic', 'Other'])
 
-region = st.selectbox("Wilayah (Region)", [
-    'Riyadh', 'Jeddah', 'Dammam', 'Al-Medina', 'Qassim', 'Jazan', 'Tabouk', 'Aseer',
-    'Al-Ahsa', 'Taef', 'Sabya', 'Makkah', 'Khobar', 'Abha', 'Al-Baha', 'Yanbu',
-    'Hail', 'Al-Namas', 'Jubail', 'Al-Jouf', 'Hafar Al-Batin', 'Najran', 'Arar',
-    'Wadi Dawasir', 'Besha', 'Qurayyat', 'Sakaka'
-])
+    with col3:
+        options = st.selectbox("🛠️ Opsi Tambahan", ['Full', 'Standard', 'Semi Full'])
+        fuel_type = st.selectbox("⛽ Jenis Bahan Bakar", ['Gas', 'Diesel', 'Hybrid'])
+        year = st.slider("📆 Tahun Mobil", 1972, 2021, 2015)
 
-color = st.selectbox("Warna Mobil (Color)", [
-    'Black', 'Silver', 'Grey', 'Navy', 'White', 'Bronze', 'Another Color', 'Golden',
-    'Brown', 'Blue', 'Red', 'Oily', 'Green', 'Orange', 'Yellow'
-])
+    col4, col5 = st.columns(2)
+    with col4:
+        engine_size = st.number_input("🔧 Ukuran Mesin (L)", min_value=1.0, max_value=9.0, step=0.1, value=2.0)
+    with col5:
+        mileage = st.number_input("🛣️ Jarak Tempuh (km)", min_value=100, max_value=4500000, step=1000, value=50000)
 
-# Input fitur ordinal
-gear_type = st.selectbox("Transmisi (Gear Type)", ['Automatic', 'Manual'])
-origin = st.selectbox("Asal Mobil (Origin)", ['Saudi', 'Gulf Arabic', 'Other'])
-options = st.selectbox("Opsi Tambahan (Options)", ['Full', 'Standard', 'Semi Full'])
-fuel_type = st.selectbox("Jenis Bahan Bakar (Fuel Type)", ['Gas', 'Diesel', 'Hybrid'])
+    submitted = st.form_submit_button("🔍 Prediksi Harga")
 
-# Input fitur numerik
-year = st.slider("Tahun Mobil (Year)", 1972, 2021, 2015)
-engine_size = st.number_input("Ukuran Mesin (L)", min_value=1.0, max_value=9.0, step=0.1, value=2.0)
-mileage = st.number_input("Jarak Tempuh (Mileage)", min_value=100, max_value=4500000, step=1000, value=50000)
+# Proses prediksi
+if submitted:
+    input_df = pd.DataFrame([{
+        'Make': make,
+        'Type': type_,
+        'Year': year,
+        'Origin': origin,
+        'Color': color,
+        'Options': options,
+        'Engine_Size': engine_size,
+        'Fuel_Type': fuel_type,
+        'Gear_Type': gear_type,
+        'Mileage': mileage,
+        'Region': region,
+        'Price': 0
+    }])
 
-input_df = pd.DataFrame([{
-    'Make': make,
-    'Type': type_,
-    'Year': year,
-    'Origin': origin,
-    'Color': color,
-    'Options': options,
-    'Engine_Size': engine_size,
-    'Fuel_Type': fuel_type,
-    'Gear_Type': gear_type,
-    'Mileage': mileage,
-    'Region': region,
-    'Price': 0  # Tambahkan kolom Price sebagai dummy, nilai bisa 0 atau np.nan
-}])
+    df_transformed = loo_encoder.transform(input_df)
+    df_transformed = ordinal_encoder.transform(df_transformed)
+    df_transformed[['Mileage', 'Year', 'Engine_Size']] = scaler.transform(
+        df_transformed[['Mileage', 'Year', 'Engine_Size']]
+    )
+    df_transformed.drop(columns=['Price'], inplace=True)
 
-# Proses encoding & scaling
-df_transformed = loo_encoder.transform(input_df)
-df_transformed = ordinal_encoder.transform(df_transformed)
-df_transformed[['Mileage', 'Year', 'Engine_Size']] = scaler.transform(df_transformed[['Mileage', 'Year', 'Engine_Size']])
-
-# Hilangkan kolom 'Price' karena hanya dummy dan tidak digunakan saat training model
-if 'Price' in df_transformed.columns:
-    df_transformed = df_transformed.drop(columns=['Price'])
-
-# Prediksi
-if st.button("Prediksi Harga"):
     pred = model.predict(df_transformed)
-    st.success(f"Perkiraan Harga Mobil: SAR {int(pred[0]):,}")
+    st.markdown(f"""
+    <div style='padding:20px; background-color:#DFF5E1; border-radius:10px; text-align:center'>
+        <h2>💰 Perkiraan Harga Mobil:</h2>
+        <h1 style='color:#219EBC;'>SAR {int(pred[0]):,}</h1>
+    </div>
+    """, unsafe_allow_html=True)
