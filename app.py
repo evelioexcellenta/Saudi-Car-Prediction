@@ -86,11 +86,22 @@ with st.form("form_prediksi"):
     'Fabia', 'Megane', 'Q7', 'Daily', 'Carens', 'A4', 'GC7', 'G330', 'H9', 'Sedona',
     'Cayenne Turbo GTS', 'SRT', 'HS', "D'max", 'Pegas', 'DTS', 'Superb', 'Veracruz',
     '307', 'CX7', 'QQ', 'L300', 'Galant'])
-        make = st.selectbox("🏷️ Merek Mobil", [...])
-        region = st.selectbox("📍 Wilayah", [...])
+        make = st.selectbox("🏷️ Merek Mobil", ['Chrysler', 'Nissan', 'Hyundai', 'Honda', 'Toyota', 'Chevrolet', 'MINI', 'Lexus',
+    'GMC', 'Mazda', 'Ford', 'Kia', 'Genesis', 'Cadillac', 'Geely', 'MG', 'Jeep',
+    'Mercedes', 'INFINITI', 'Dodge', 'Great Wall', 'Jaguar', 'Land Rover', 'GAC',
+    'Renault', 'Suzuki', 'Peugeot', 'Changan', 'HAVAL', 'BMW', 'Mitsubishi',
+    'Subaru', 'Zhengzhou', 'Lincoln', 'Daihatsu', 'FAW', 'Chery', 'Porsche', 'Isuzu',
+    'Volkswagen', 'Audi', 'Fiat', 'Mercury', 'Classic', 'Hummer', 'BYD', 'Maserati',
+    'Lifan', 'Bentley', 'Foton', 'Aston Martin', 'Other', 'Victory Auto', 'Škoda',
+    'Iveco'])
+        region = st.selectbox("📍 Wilayah", [ 'Riyadh', 'Jeddah', 'Dammam', 'Al-Medina', 'Qassim', 'Jazan', 'Tabouk', 'Aseer',
+    'Al-Ahsa', 'Taef', 'Sabya', 'Makkah', 'Khobar', 'Abha', 'Al-Baha', 'Yanbu',
+    'Hail', 'Al-Namas', 'Jubail', 'Al-Jouf', 'Hafar Al-Batin', 'Najran', 'Arar',
+    'Wadi Dawasir', 'Besha', 'Qurayyat', 'Sakaka'])
 
     with col2:
-        color = st.selectbox("🎨 Warna Mobil", [...])
+        color = st.selectbox("🎨 Warna Mobil", [ 'Black', 'Silver', 'Grey', 'Navy', 'White', 'Bronze', 'Another Color', 'Golden',
+    'Brown', 'Blue', 'Red', 'Oily', 'Green', 'Orange', 'Yellow'])
         gear_type = st.selectbox("⚙️ Transmisi", ['Automatic', 'Manual'])
         origin = st.selectbox("🌍 Asal Mobil", ['Saudi', 'Gulf Arabic', 'Other'])
 
